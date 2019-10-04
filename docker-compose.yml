@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        - PORT
+      dockerfile: ./Dockerfile
+    image: registry.ops.tune.com/engineering/workflow-automation/demand-sourcing-api:${CI_PIPELINE_ID:-localdeploy}-${CI_COMMIT_REF_NAME:-test}-demand-sourcing-api-${DEPLOY_TYPE:-localdeploy}
+    volumes:
+      - '.:/data/www/demand-sourcing-api/'
+    environment:
+      - MONOLOG_DOCKER=1
+      - PORT=3000
+      - NODE_ENV=${NODE_ENV:-staging}
+    ports:
+      - 8080:$PORT
+    restart: always
+    logging:
+      driver: json-file
